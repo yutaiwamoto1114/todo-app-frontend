@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # Install Node.js and npm (AWS CodeBuild の標準イメージはデフォルトでNode.jsが入っている場合もあります)
+      # その場合、以下のコマンドは省略できます。
+      # - echo Installing Node.js...
+      # - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+      # - apt-get install -y nodejs
+      
+      # もしもYarnを使っている場合は以下のコマンドでインストール
+      # - npm install -g yarn
+
+      # Install project dependencies
+      - echo Installing project dependencies...
+      - npm install
+
+  pre_build:
+    commands:
+      # If you're using a .env file or similar, you'd handle it here
+      # - cp .env.production .env
+
+  build:
+    commands:
+      # Build the React.js project
+      - echo Building the React.js project...
+      - npm run build
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'build' # Reactのビルド成果物は 'build' ディレクトリに格納されます
+
+cache:
+  paths:
+    - 'node_modules/**/*'
