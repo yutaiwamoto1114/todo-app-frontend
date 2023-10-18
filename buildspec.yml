@@ -31,6 +31,7 @@ artifacts:
   files:
     - '**/*'
   base-directory: 'build' # Reactのビルド成果物は 'build' ディレクトリに格納されます
+  packaging: 'NONE' # zip圧縮しない
 
 cache:
   paths:

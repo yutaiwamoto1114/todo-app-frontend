@@ -51,6 +51,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <h1>Todo App</h1>
       <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} />
     </div>
   );
