@@ -15,7 +15,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await axios.get("/api/tasks");
+        const response = await axios.get(`${backendURL}/api/tasks`);
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -31,7 +31,7 @@ const App: React.FC = () => {
 
     try {
       const updatedTask = { ...task, completed: !task.completed };
-      await axios.put(`/api/tasks/${id}`, updatedTask);
+      await axios.put(`${backendURL}/api/tasks/${id}`, updatedTask);
       const updatedTasks = tasks.map((t) => (t.id === id ? updatedTask : t));
       setTasks(updatedTasks);
     } catch (error) {
@@ -41,7 +41,7 @@ const App: React.FC = () => {
 
   const deleteTask = async (id: number) => {
     try {
-      await axios.delete(`/api/tasks/${id}`);
+      await axios.delete(`${backendURL}/api/tasks/${id}`);
       const remainingTasks = tasks.filter((task) => task.id !== id);
       setTasks(remainingTasks);
     } catch (error) {
