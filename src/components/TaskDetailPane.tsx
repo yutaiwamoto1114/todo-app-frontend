@@ -88,7 +88,7 @@ const TaskDetailPane: React.FC<TaskDetailPaneProps> = ({
 
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
-      <div style={{ width: "300px", padding: "16px" }}>
+      <div style={{ width: "250px", padding: "16px" }}>
         <ListItem>
           <ListItemIcon onClick={task ? handleToggleCompletion : undefined}>
             <CheckCircleOutlineIcon

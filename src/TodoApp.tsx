@@ -5,6 +5,7 @@ import TaskList from "./components/TaskList";
 import TaskDetailPane from "./components/TaskDetailPane";
 import AddTaskForm from "./components/AddTaskForm";
 import { Container, Box, Typography } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const App: React.FC = () => {
   // 環境変数からバックエンドのURLをセット
@@ -19,17 +20,40 @@ const App: React.FC = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
+  // プログレスバーのために、すべてのタスク数と完了したタスク数を取得
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const progressPercentage = totalTasks
+    ? (completedTasks / totalTasks) * 100
+    : 0;
+
   // タスクがクリックされたとき
   const handleTaskClick = (id: number) => {
     setSelectedTaskId(id);
   };
+
+  // // タスクの取得ロジック
+  // useEffect(() => {
+  //   async function fetchTasks() {
+  //     try {
+  //       const response = await axios.get(`${backendURL}/api/tasks`);
+  //       setTasks(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching tasks:", error);
+  //     }
+  //   }
+  //   fetchTasks();
+  // }, []);
 
   // タスクの取得ロジック
   useEffect(() => {
     async function fetchTasks() {
       try {
         const response = await axios.get(`${backendURL}/api/tasks`);
-        setTasks(response.data);
+        const sortedTasks = response.data.sort((a: any, b: any) =>
+          a.completed === b.completed ? 0 : a.completed ? 1 : -1
+        );
+        setTasks(sortedTasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -107,7 +131,22 @@ const App: React.FC = () => {
         <Typography variant="h4" gutterBottom>
           To Do
         </Typography>
-        <Box width="100%">
+        <Box width="100%" mb={2}>
+          {/* プログレスバーの変更部分 */}
+          <LinearProgress
+            variant="determinate"
+            value={progressPercentage}
+            sx={{
+              height: "8px",
+              backgroundColor: "#e0e0e0", // バーの背景色
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: "#4caf50", // 緑色
+              },
+            }}
+          />
+          <Typography align="right" variant="caption" color="textSecondary">
+            {completedTasks}/{totalTasks}
+          </Typography>
           <AddTaskForm onAdd={addTask} />
           <TaskList
             tasks={tasks}
@@ -115,9 +154,17 @@ const App: React.FC = () => {
             deleteTask={deleteTask}
             onTaskClick={handleTaskClick}
           />
+          {/* タスクが選択されたとき、そのタスクの詳細ペインを表示 */}
           {selectedTaskId && (
             <TaskDetailPane
-              task={selectedTask as { id: number; title: string; description: string; completed: boolean }}
+              task={
+                selectedTask as {
+                  id: number;
+                  title: string;
+                  description: string;
+                  completed: boolean;
+                }
+              }
               open={!!selectedTaskId}
               onClose={handleCloseDetailPane}
               toggleTask={toggleTask}
